@@ -6,9 +6,10 @@ import tempfile
 import zipfile
 from pathlib import Path
 from PIL import Image, ImageDraw
+from build_seraph_armor import add_seraph_assets
 
 BASE_ZIP = Path("AIcraft-ResourcePack-0.9.6-Lodestone-Fallback-Fix.zip")
-NEW_ZIP = Path("AIcraft-ResourcePack-0.9.8b-CitizenTrial-Spade-Axe-Fix.zip")
+NEW_ZIP = Path("AIcraft-ResourcePack-0.9.9-Seraph-Chestplates.zip")
 SERVER_ZIP = Path("server-pack.zip")
 SERVER_SHA1 = Path("server-pack.sha1")
 
@@ -164,13 +165,15 @@ def main():
             ensure_mapping(items,f"{prefix}_hoe",260105,"aicraft:item/citizentrial_ancient_hoe")
 
         (root/"AIcraft_CHANGELOG_0_9_8b_CITIZENTRIAL_SPADE_AXE.txt").write_text(
-            "AIcraft ResourcePack 0.9.8b – CitizenTrial Spade & Slim Axe\\n"
+            "AIcraft ResourcePack 0.9.9 – CitizenTrial + Seraph Chestplates\\n"
             "- CitizenTrial axe slimmer, with forged edge: 6 stages.\\n"
             "- CitizenTrial shovel shaped as squared spade with a wooden T-grip: 6 stages.\\n"
             "- Existing CitizenTrial sword, pickaxe, relics, Stargate and other assets unchanged.\\n"
             "- CustomModelData, JSON mappings and vanilla fallback preserved.\\n",
             encoding="utf-8"
         )
+
+        add_seraph_assets(root)
 
         mcmeta=root/"pack.mcmeta"
         meta=json.loads(mcmeta.read_text(encoding="utf-8"))

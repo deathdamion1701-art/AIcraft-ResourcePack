@@ -14,54 +14,82 @@ def rect(d,box,c): d.rectangle(box,fill=c)
 def poly(d,pts,c): d.polygon(pts,fill=c)
 
 def chest_icon(p):
- im=Image.new("RGBA",(32,32));d=ImageDraw.Draw(im);dark="#28222c";edge=p["edge"];light=p["light"];metal=p["metal"]
- poly(d,[(7,4),(12,3),(14,6),(18,6),(20,3),(25,4),(31,12),(29,20),(25,19),(24,28),(8,28),(7,19),(3,20),(1,12)],dark)
- poly(d,[(8,6),(12,5),(15,9),(17,9),(20,5),(24,6),(29,12),(27,17),(23,15),(22,26),(10,26),(9,15),(5,17),(3,12)],metal)
- poly(d,[(8,6),(13,6),(15,10),(17,10),(20,6),(24,6),(23,11),(20,14),(12,14),(9,11)],light)
- poly(d,[(12,4),(15,4),(15,7),(17,7),(17,4),(20,4),(19,10),(13,10)],dark)
- d.line([(5,10),(9,7),(12,12),(16,15),(20,12),(23,7),(28,10)],fill=edge,width=2)
- d.line([(4,12),(7,17),(9,16)],fill=p["shade"],width=2)
- d.line([(28,12),(25,17),(23,16)],fill=p["shade"],width=2)
- poly(d,[(16,12),(19,16),(16,22),(13,16)],edge)
- poly(d,[(16,13),(18,16),(16,20),(14,16)],p["accent"])
- d.line([(10,18),(11,24),(15,26),(17,26),(21,24),(22,18)],fill=p["shade"],width=2)
- d.line([(10,24),(13,25),(19,25),(22,24)],fill=edge,width=2)
- rect(d,(15,21,17,22),light)
+ # Slender medieval breastplate icon: light trim, narrow shoulders, small rune.
+ im=Image.new("RGBA",(32,32));d=ImageDraw.Draw(im)
+ metal=p["metal"];light=p["light"];shade=p["shade"]
+ trim=p["edge"];gem=p["accent"];fabric=p["cloth"]
+ poly(d,[(8,5),(13,4),(15,7),(17,7),(19,4),(24,5),
+         (29,11),(27,17),(24,16),(23,26),(9,26),(8,16),
+         (5,17),(3,11)],shade)
+ poly(d,[(9,6),(12,6),(15,10),(17,10),(20,6),(23,6),
+         (27,11),(26,15),(23,14),(22,24),(10,24),
+         (9,14),(6,15),(5,11)],fabric)
+ # Narrow silver/metal breastplate on top of the fitted tunic.
+ poly(d,[(11,9),(15,12),(17,12),(21,9),(23,13),
+         (21,18),(19,23),(13,23),(11,18),(9,13)],metal)
+ d.line([(10,11),(13,14),(16,16),(19,14),(22,11)],fill=trim,width=1)
+ d.line([(12,19),(15,21),(17,21),(20,19)],fill=light,width=1)
+ poly(d,[(16,14),(18,17),(16,20),(14,17)],trim)
+ poly(d,[(16,15),(17,17),(16,19),(15,17)],gem)
+ d.line([(10,23),(13,25),(19,25),(22,23)],fill=trim,width=1)
+ d.point((12,10),fill=light);d.point((20,10),fill=light)
  return im
 
 def armor_texture(p):
- # Full-size 128x64 humanoid-layer UV, i.e. standard 64x32 armor map x2.
- im=Image.new("RGBA",(128,64));d=ImageDraw.Draw(im)
- metal=p["metal"];edge=p["edge"];light=p["light"];shade=p["shade"];accent=p["accent"];cloth=p["cloth"]
- # Torso front x40..55; back x64..79; sides x32..39 and x56..63.
- for box in [(40,40,55,63),(64,40,79,63),(32,40,39,63),(56,40,63,63)]:rect(d,box,shade)
- rect(d,(41,41,54,60),metal);rect(d,(43,42,52,44),light)
- d.line([(41,45),(47,51),(48,57),(54,45)],fill=edge,width=2)
- d.line([(41,56),(47,61),(54,56)],fill=edge,width=2)
- d.line([(41,59),(54,59)],fill=shade,width=2)
- poly(d,[(48,48),(52,53),(48,59),(44,53)],edge)
- poly(d,[(48,50),(50,53),(48,57),(46,53)],accent)
- d.line([(41,46),(43,49)],fill=light,width=2)
- d.line([(54,46),(52,49)],fill=light,width=2)
- d.line([(41,61),(54,61)],fill=edge,width=2)
- rect(d,(45,60,50,62),cloth)
- rect(d,(65,41,78,61),metal);d.line([(65,43),(78,43)],fill=light,width=2)
- d.line([(65,54),(72,59),(78,54)],fill=edge,width=2)
- poly(d,[(72,46),(75,49),(72,54),(69,49)],accent)
- d.line([(65,61),(78,61)],fill=edge,width=2)
- for bx0 in (32,56):
-  rect(d,(bx0+1,41,bx0+6,61),metal)
-  d.line([(bx0+1,43),(bx0+6,47)],fill=edge,width=2)
-  d.line([(bx0+1,59),(bx0+6,59)],fill=light,width=1)
- # Upper arms (one vanilla arm UV; Minecraft mirrors for the second arm).
- for bx0 in (80,88,96,104):
-  rect(d,(bx0,40,bx0+7,63),shade)
-  rect(d,(bx0+1,41,bx0+6,58),metal)
-  d.line([(bx0+1,44),(bx0+6,46)],fill=light,width=2)
-  d.line([(bx0+1,49),(bx0+6,51)],fill=edge,width=2)
-  d.line([(bx0+1,57),(bx0+6,58)],fill=edge,width=2)
-  rect(d,(bx0+2,60,bx0+5,62),cloth)
- # Do not fill helmet or leggings UV: chestplate only.
+ """Slim illustrated chest armor on the vanilla humanoid UV atlas (128x64).
+ Transparent arms and side margins reduce the perceived size, while armor
+ geometry and all gameplay mechanics remain unchanged.
+ Body front: x40..55, back: x64..79, sides x32..39 / x56..63.
+ Arms: x80..111. Chestplate only: leave all other UV areas transparent.
+ """
+ im=Image.new("RGBA",(128,64),(0,0,0,0));d=ImageDraw.Draw(im)
+ metal=p["metal"];light=p["light"];shade=p["shade"]
+ trim=p["edge"];gem=p["accent"];fabric=p["cloth"]
+
+ # FRONT: fitted linen tunic underneath a tapered breastplate.
+ # Transparent side margins keep the chest from reading as a solid box.
+ poly(d,[(43,41),(46,40),(49,40),(52,41),(53,45),(53,53),
+         (51,59),(50,62),(45,62),(44,59),(42,53),(42,45)],fabric)
+ d.line([(44,42),(47,44),(50,42),(52,44)],fill=light,width=1)
+ poly(d,[(43,45),(47,48),(48,51),(49,48),(52,45),
+         (51,53),(50,56),(48,58),(45,56),(44,53)],metal)
+ d.line([(43,46),(47,51),(48,53),(49,51),(52,46)],fill=trim,width=1)
+ d.line([(44,54),(48,58),(51,54)],fill=shade,width=1)
+ d.line([(45,59),(48,60),(50,59)],fill=trim,width=1)
+ # Tiny gem instead of the previous huge central cross.
+ poly(d,[(48,49),(50,52),(48,55),(46,52)],trim)
+ poly(d,[(48,50),(49,52),(48,54),(47,52)],gem)
+ d.point((48,50),fill=light)
+
+ # BACK: narrow textile vest and two fine embroidered lines;
+ # deliberately no broad glowing insignia covering the player's back.
+ poly(d,[(67,41),(71,40),(74,40),(77,41),(77,52),
+         (76,57),(75,62),(69,62),(68,57),(67,52)],fabric)
+ poly(d,[(68,42),(71,41),(73,41),(76,42),(76,47),
+         (73,48),(71,48),(68,47)],shade)
+ d.line([(68,44),(71,46),(73,46),(76,44)],fill=trim,width=1)
+ d.line([(69,48),(69,55),(71,60)],fill=trim,width=1)
+ d.line([(75,48),(75,55),(73,60)],fill=trim,width=1)
+ d.line([(71,58),(72,60),(73,58)],fill=light,width=1)
+ poly(d,[(72,49),(74,51),(72,54),(70,51)],metal)
+ poly(d,[(72,50),(73,51),(72,53),(71,51)],gem)
+
+ # Side panels are mainly fabric. A thin metal clasp, not a solid slab.
+ for sx in (32,56):
+  poly(d,[(sx+2,42),(sx+5,42),(sx+6,46),(sx+6,54),
+          (sx+5,59),(sx+3,61),(sx+2,57),(sx+1,51)],fabric)
+  d.line([(sx+2,44),(sx+5,45)],fill=trim,width=1)
+  d.line([(sx+2,52),(sx+5,52)],fill=shade,width=1)
+
+ # SHORT shoulder guards only, the rest of each arm shows normal clothing.
+ # Previous design covered entire upper arms, making a huge rectangular pauldron.
+ for sx in (80,88,96,104):
+  poly(d,[(sx+2,41),(sx+5,41),(sx+7,44),
+          (sx+6,47),(sx+2,47),(sx+1,44)],metal)
+  d.line([(sx+2,42),(sx+5,42)],fill=light,width=1)
+  d.line([(sx+1,45),(sx+3,47),(sx+6,46)],fill=trim,width=1)
+  d.point((sx+4,44),fill=shade)
+
  return im
 
 def insert_item_model(items,material,cmd,model_id):
@@ -89,9 +117,10 @@ def add_seraph_assets(root):
   chest_icon(p).save(icons/f"{name}.png")
   (models/f"{name}.json").write_text(json.dumps({"parent":"minecraft:item/generated","textures":{"layer0":f"aicraft:item/{name}"}},indent=2),encoding="utf-8")
   insert_item_model(items,p["material"],p["cmd"],f"aicraft:item/{name}")
- (root/"AIcraft_CHANGELOG_0_9_9_SERAPH_CHESTPLATES.txt").write_text(
-  "AIcraft ResourcePack 0.9.9: Five medieval Seraph chestplates.\n"
+ (root/"AIcraft_CHANGELOG_0_9_10_SERAPH_ELEGANT.txt").write_text(
+  "AIcraft ResourcePack 0.9.10: Five elegant medieval Seraph chestplates (Variant B).\n"
   "Special PDC-marked plates only; vanilla armor and game rules preserved.\n"
+  "Less bulky shoulder plates, narrow tapered armor, fine back embroidery.\n"
   "Equipped textures require AIcraft-SeraphVisuals plugin.\n",encoding="utf-8")
 
 if __name__=="__main__":

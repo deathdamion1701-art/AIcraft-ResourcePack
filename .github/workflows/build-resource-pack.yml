@@ -28,14 +28,12 @@ jobs:
         run: |
           git config user.name "AIcraft Pack Builder"
           git config user.email "actions@users.noreply.github.com"
-          git add AIcraft-ResourcePack-0.9.6-Lodestone-Fallback-Fix.zip
-          git add AIcraft-ResourcePack-0.9.7-CitizenTrial-Relic-Tools.zip
-          git add AIcraft-ResourcePack-0.9.8-CitizenTrial-Tool-Polish.zip
+          git add AIcraft-ResourcePack-0.9.8a-CitizenTrial-Silhouette-Fix.zip
           git add server-pack.zip
           git add server-pack.sha1
           if git diff --cached --quiet; then
             echo "No pack changes."
             exit 0
           fi
-          git commit -m "Build resource pack 0.9.7 with CitizenTrial relic tools"
+          git commit -m "Build resource pack 0.9.8a with CitizenTrial silhouette fixes"
           git push

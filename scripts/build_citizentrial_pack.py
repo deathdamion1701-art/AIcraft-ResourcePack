@@ -8,8 +8,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 BASE_ZIP = Path("AIcraft-ResourcePack-0.9.6-Lodestone-Fallback-Fix.zip")
-OLD_097 = Path("AIcraft-ResourcePack-0.9.7-CitizenTrial-Relic-Tools.zip")
-NEW_ZIP = Path("AIcraft-ResourcePack-0.9.8-CitizenTrial-Tool-Polish.zip")
+NEW_ZIP = Path("AIcraft-ResourcePack-0.9.8a-CitizenTrial-Silhouette-Fix.zip")
 SERVER_ZIP = Path("server-pack.zip")
 SERVER_SHA1 = Path("server-pack.sha1")
 
@@ -30,40 +29,67 @@ MATERIALS={"wood":"wooden","stone":"stone","iron":"iron","gold":"golden","diamon
 
 def draw_pickaxe(stage):
     p=STAGES[stage]; im=Image.new("RGBA",(32,32),(0,0,0,0)); d=ImageDraw.Draw(im)
-    d.line((6,30,18,14), fill=OUTLINE, width=5); d.line((6,30,18,14), fill=HANDLE, width=3); d.line((8,28,17,15), fill=HANDLE_HI, width=1)
-    d.polygon([(5,8),(9,5),(17,6),(20,5),(27,6),(30,9),(27,11),(21,10),(18,13),(15,11),(9,10),(5,11)], fill=OUTLINE)
-    d.polygon([(7,8),(10,7),(17,8),(20,7),(26,8),(28,9),(26,9),(20,9),(18,11),(16,9),(10,9),(7,10)], fill=p["base"])
-    d.line((10,7,26,8), fill=p["light"], width=1); d.line((9,10,25,9), fill=p["dark"], width=1)
-    d.rectangle((16,7,19,10), fill=(78,218,255,255)); d.point((17,6), fill=(192,250,255,255))
+    # Robust wooden haft, viewed at the familiar vanilla 45-degree angle.
+    d.line((6,29,18,12),fill=OUTLINE,width=6)
+    d.line((6,29,18,12),fill=HANDLE,width=4)
+    d.line((8,27,18,13),fill=HANDLE_HI,width=1)
+    # Forged, clearly hooked pick head; never a thin horizontal bar.
+    d.polygon([(3,9),(6,5),(11,4),(17,6),(22,5),(27,4),(31,7),
+               (30,11),(27,12),(25,9),(20,9),(18,14),(15,12),(13,10),
+               (8,9),(5,12),(3,11)],fill=OUTLINE)
+    d.polygon([(6,8),(9,6),(16,8),(22,7),(27,6),(29,8),
+               (28,10),(25,8),(19,8),(17,11),(15,9),(9,8),(6,10)],fill=p['base'])
+    d.line((9,6,16,8,22,7,27,6),fill=p['light'],width=2)
+    d.line((9,9,14,10,17,12),fill=p['dark'],width=1)
+    d.rectangle((16,7,19,10),fill=p['dark']); d.point((17,8),fill=(138,220,226,255))
     return im
 
 def draw_axe(stage):
     p=STAGES[stage]; im=Image.new("RGBA",(32,32),(0,0,0,0)); d=ImageDraw.Draw(im)
-    d.line((6,30,18,13), fill=OUTLINE, width=5); d.line((6,30,18,13), fill=HANDLE, width=3); d.line((8,28,17,14), fill=HANDLE_HI, width=1)
-    d.polygon([(15,8),(19,5),(27,6),(30,10),(29,15),(25,19),(19,18),(16,15),(13,15),(12,11)], fill=OUTLINE)
-    d.polygon([(17,9),(20,7),(26,8),(28,10),(27,14),(24,17),(20,16),(18,14),(15,14),(14,11)], fill=p["base"])
-    d.line((20,7,26,8), fill=p["light"], width=1); d.line((24,17,20,16), fill=p["dark"], width=1)
-    d.line((18,11,24,15), fill=(76,205,100,255), width=1); d.point((25,14), fill=(177,246,157,255))
+    d.line((6,29,19,12),fill=OUTLINE,width=6)
+    d.line((6,29,19,12),fill=HANDLE,width=4)
+    d.line((8,27,18,13),fill=HANDLE_HI,width=1)
+    # Broad cleaving blade with a distinct cutting edge instead of a round hammer.
+    d.polygon([(7,4),(12,2),(19,5),(21,9),(23,9),(27,12),(26,16),
+               (22,17),(19,15),(16,14),(13,18),(8,20),(4,17),(7,12)],fill=OUTLINE)
+    d.polygon([(9,6),(12,4),(18,7),(19,11),(21,11),(24,13),
+               (23,15),(19,13),(16,12),(12,16),(9,18),(6,16),(9,12)],fill=p['base'])
+    d.line((8,6,6,16,9,18),fill=p['light'],width=2)
+    d.line((12,4,18,7),fill=p['light'],width=1)
+    d.line((11,15,15,12,20,13),fill=p['dark'],width=1)
+    d.point((17,9),fill=(141,210,128,255))
     return im
 
 def draw_shovel(stage):
     p=STAGES[stage]; im=Image.new("RGBA",(32,32),(0,0,0,0)); d=ImageDraw.Draw(im)
-    d.line((6,30,18,14), fill=OUTLINE, width=5); d.line((6,30,18,14), fill=HANDLE, width=3); d.line((8,28,17,15), fill=HANDLE_HI, width=1)
-    d.polygon([(15,13),(16,8),(20,4),(25,4),(29,8),(28,14),(24,19),(19,18),(15,15)], fill=OUTLINE)
-    d.polygon([(18,13),(18,9),(21,6),(24,6),(27,9),(26,13),(23,17),(20,16),(17,14)], fill=p["base"])
-    d.line((21,6,24,6), fill=p["light"], width=1); d.line((20,16,23,17), fill=p["dark"], width=1)
-    d.polygon([(21,10),(23,8),(25,10),(23,13)], fill=(224,160,57,255))
+    d.line((6,29,18,14),fill=OUTLINE,width=6)
+    d.line((6,29,18,14),fill=HANDLE,width=4)
+    d.line((8,27,17,15),fill=HANDLE_HI,width=1)
+    # Wide forged spade with an angular pointed tip and facets, not an oval spoon.
+    d.polygon([(19,4),(25,2),(30,6),(30,12),(27,16),
+               (23,20),(19,19),(15,15),(15,10)],fill=OUTLINE)
+    d.polygon([(20,6),(25,4),(28,7),(28,12),(25,15),
+               (22,18),(19,17),(17,14),(17,10)],fill=p['base'])
+    d.line((20,6,25,4,28,7),fill=p['light'],width=2)
+    d.line((18,12,22,17,25,15),fill=p['dark'],width=1)
+    d.line((22,8,24,12,22,15),fill=p['light'],width=1)
     return im
 
 def draw_sword(stage):
     p=STAGES[stage]; im=Image.new("RGBA",(32,32),(0,0,0,0)); d=ImageDraw.Draw(im)
-    d.polygon([(8,25),(11,28),(26,9),(28,3),(23,6),(9,22)], fill=OUTLINE)
-    d.polygon([(10,24),(11,26),(24,9),(26,5),(23,8),(11,23)], fill=p["base"])
-    d.line((12,23,25,7), fill=p["light"], width=1); d.line((10,24,22,10), fill=p["dark"], width=1)
-    d.line((13,22,23,10), fill=(239,82,42,255), width=2); d.point((24,8), fill=(255,198,90,255))
-    d.line((5,21,15,29), fill=OUTLINE, width=5); d.line((6,22,14,28), fill=p["dark"], width=2)
-    d.line((4,31,10,25), fill=OUTLINE, width=5); d.line((5,30,9,26), fill=HANDLE, width=3)
-    d.rectangle((2,28,6,31), fill=OUTLINE); d.rectangle((3,29,5,30), fill=(239,82,42,255))
+    # Broad, straight medieval blade with a proper crossguard and short grip.
+    d.polygon([(9,21),(13,25),(28,9),(31,1),(23,5)],fill=OUTLINE)
+    d.polygon([(11,21),(13,23),(26,9),(29,4),(24,7)],fill=p['base'])
+    d.line((12,21,27,7),fill=p['light'],width=2)
+    d.line((14,23,25,11),fill=p['dark'],width=1)
+    d.line((17,16,22,11),fill=(231,131,49,255),width=1)
+    d.polygon([(5,18),(8,17),(17,26),(16,29),(13,29),(5,21)],fill=OUTLINE)
+    d.line((7,19,15,27),fill=p['dark'],width=2)
+    d.line((5,30,11,24),fill=OUTLINE,width=5)
+    d.line((5,30,11,24),fill=HANDLE,width=3)
+    d.line((7,28,10,25),fill=HANDLE_HI,width=1)
+    d.rectangle((2,29,5,31),fill=OUTLINE)
+    d.point((3,30),fill=p['light'])
     return im
 
 def draw_ancient_hoe():
@@ -128,18 +154,17 @@ def main():
         for prefix in MATERIALS.values():
             ensure_mapping(items,f"{prefix}_hoe",260105,"aicraft:item/citizentrial_ancient_hoe")
 
-        (root/"AIcraft_CHANGELOG_0_9_8_CITIZENTRIAL_TOOL_POLISH.txt").write_text(
-            "AIcraft ResourcePack 0.9.8 – CitizenTrial Tool Polish\n"
-            "- Sword larger and closer to vanilla size.\n"
-            "- Pickaxe, axe and shovel have clearer silhouettes.\n"
-            "- Ancient Hoe/Rake uses CustomModelData 260105.\n"
-            "- Vanilla fallback remains intact.\n",
+        (root/"AIcraft_CHANGELOG_0_9_8a_CITIZENTRIAL_SILHOUETTES.txt").write_text(
+            "AIcraft ResourcePack 0.9.8a – CitizenTrial Silhouette Fix\n"
+            "- 24 textures: pickaxe, axe, sword and shovel across six stages.\n"
+            "- Stronger vanilla-like medieval silhouettes in hotbar and hand.\n"
+            "- All other items, mapping and vanilla fallback preserved.\n",
             encoding="utf-8"
         )
 
         mcmeta=root/"pack.mcmeta"
         meta=json.loads(mcmeta.read_text(encoding="utf-8"))
-        meta["pack"]["description"]="AIcraft ResourcePack 0.9.8 – CitizenTrial Tool Polish"
+        meta["pack"]["description"]="AIcraft ResourcePack 0.9.8a – CitizenTrial Silhouette Fix"
         mcmeta.write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding="utf-8")
 
         for path in root.rglob("*.json"):
@@ -153,9 +178,6 @@ def main():
 
         shutil.copy2(temp_out,NEW_ZIP)
         shutil.copy2(temp_out,SERVER_ZIP)
-        # Keep the previous fixed links usable too.
-        shutil.copy2(temp_out,OLD_097)
-        shutil.copy2(temp_out,BASE_ZIP)
 
         sha1=hashlib.sha1(temp_out.read_bytes()).hexdigest()
         SERVER_SHA1.write_text(sha1+"\n",encoding="utf-8")

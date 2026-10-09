@@ -18,6 +18,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install image builder
+        run: python3 -m pip install pillow
+
       - name: Build updated pack
         run: python3 scripts/build_citizentrial_pack.py
 
@@ -27,6 +30,7 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add AIcraft-ResourcePack-0.9.6-Lodestone-Fallback-Fix.zip
           git add AIcraft-ResourcePack-0.9.7-CitizenTrial-Relic-Tools.zip
+          git add AIcraft-ResourcePack-0.9.8-CitizenTrial-Tool-Polish.zip
           git add server-pack.zip
           git add server-pack.sha1
           if git diff --cached --quiet; then

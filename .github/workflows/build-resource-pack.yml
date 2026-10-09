@@ -1,0 +1,35 @@
+name: Build AIcraft Resource Pack
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/build_citizentrial_pack.py"
+      - ".github/workflows/build-resource-pack.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build-pack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build updated pack
+        run: python3 scripts/build_citizentrial_pack.py
+
+      - name: Commit generated packs
+        run: |
+          git config user.name "AIcraft Pack Builder"
+          git config user.email "actions@users.noreply.github.com"
+          git add AIcraft-ResourcePack-0.9.6-Lodestone-Fallback-Fix.zip
+          git add AIcraft-ResourcePack-0.9.7-CitizenTrial-Relic-Tools.zip
+          if git diff --cached --quiet; then
+            echo "No pack changes."
+            exit 0
+          fi
+          git commit -m "Build resource pack 0.9.7 with CitizenTrial relic tools"
+          git push
